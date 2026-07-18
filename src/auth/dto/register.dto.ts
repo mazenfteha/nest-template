@@ -1,16 +1,15 @@
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
-  IsOptional,
   IsString,
   Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { UserRole } from '../../common/enums/user-role.enum';
 
+// Public registration only creates USER accounts. Privileged roles (ADMIN, …)
+// are provisioned via the seed or an admin-only endpoint — never self-assigned.
 export class RegisterDto {
   @IsEmail()
   @Transform(({ value }) => value?.toLowerCase().trim())
@@ -35,10 +34,4 @@ export class RegisterDto {
   @MaxLength(100)
   @Transform(({ value }) => value?.trim())
   lastName: string;
-
-  @IsOptional()
-  @IsEnum(UserRole, {
-    message: `role must be one of: ${Object.values(UserRole).join(', ')}`,
-  })
-  role?: UserRole;
 }

@@ -32,25 +32,17 @@ export class AuthService {
     if (exists) throw new ConflictException('Email already registered');
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
-    const role = dto.role ?? UserRole.USER;
 
-    await this.prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
-        data: {
-          email: dto.email,
-          passwordHash,
-          firstName: dto.firstName,
-          lastName: dto.lastName,
-          role,
-        },
-      });
-
-      // USER is the base role (no profile table); ADMIN gets an Admin profile.
-      if (role === UserRole.ADMIN) {
-        await tx.admin.create({ data: { userId: user.id } });
-      }
-
-      return user;
+    // Public registration always creates a base USER. Privileged roles are
+    // provisioned via the seed or an admin-only endpoint, never self-assigned.
+    await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        passwordHash,
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        role: UserRole.USER,
+      },
     });
 
     return { message: 'Registration successful' };

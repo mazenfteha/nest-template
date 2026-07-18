@@ -62,8 +62,8 @@ Then follow **Setup**. On first migrate, Prisma creates a fresh initial migratio
 npm install
 
 # 1. Configure environment
-cp .env.example .env.development   # .env.development is already committed with local defaults
-# edit DATABASE_URL / JWT_ACCESS_SECRET as needed
+cp .env.example .env.development   # then edit DATABASE_URL / JWT_ACCESS_SECRET as needed
+#    (.env.development is git-ignored — safe to hold local secrets)
 
 # 2. Generate the Prisma client + create tables
 npm run prisma:generate
@@ -100,7 +100,7 @@ Validated at boot by `src/config/validation.schema.ts` — the app won't start i
 | `JWT_REFRESH_EXPIRES_DAYS` | no | `7` | Refresh-token lifetime (days) |
 | `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | no | `admin@example.com` / `ChangeMe123!` | Used by `npm run db:seed` |
 
-Only `.env.example` and `.env.development` are committed. Create `.env.staging` / `.env.production` from the example at deploy time (they are git-ignored); in real deployments inject secrets via the host's environment, which overrides file values.
+Only `.env.example` is committed. Create your `.env.development` (and `.env.staging` / `.env.production` at deploy time) from it — the real env files are git-ignored. In real deployments, inject secrets via the host's environment, which overrides file values.
 
 > **Adding a new env variable** (e.g. an S3 key)? Follow the step-by-step config workflow in
 > [`docs/configuration.md`](docs/configuration.md) — validate (Joi) → namespace (`registerAs`) →
@@ -180,3 +180,9 @@ npm run test       # unit
 npm run test:e2e   # e2e (boots AppModule)
 npm run test:cov   # coverage
 ```
+
+## Documentation
+
+- [`docs/authentication.md`](docs/authentication.md) — full auth/authz workflow, protecting routes, adding roles, reusing the system in other projects.
+- [`docs/configuration.md`](docs/configuration.md) — how to add a new env/config variable (validate → namespace → load → consume).
+- [`docs/git-workflow.md`](docs/git-workflow.md) — branching model and the Issue → PR → Review → Merge workflow.
