@@ -1,0 +1,374 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Default module",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/health/ready": {
+      "get": {
+        "summary": "health check",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "ok",
+                  "info": {
+                    "database": {
+                      "status": "up"
+                    }
+                  },
+                  "error": {},
+                  "details": {
+                    "database": {
+                      "status": "up"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/health/live": {
+      "get": {
+        "summary": "liveness probe",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "status": "ok",
+                  "info": {
+                    "memory_heap": {
+                      "status": "up"
+                    }
+                  },
+                  "error": {},
+                  "details": {
+                    "memory_heap": {
+                      "status": "up"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/auth/register": {
+      "post": {
+        "summary": "Register",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "email": "mazen@gmail.com",
+                "password": "Mazen@123",
+                "firstName": "Mazennios",
+                "lastName": "Fteha"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "message": "Registration successful"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "summary": "Login",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "email": "mazen@gmail.com",
+                "password": "Mazen@123"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMTViMmZhNy01MTZjLTQ2ZTctOWJjNS02MjRlM2Y3YTZhMWEiLCJlbWFpbCI6Im1hemVuQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg0Mzg1NzIwLCJleHAiOjE3ODQzODY2MjB9.vEONjllFrNj9vOvBi7WGksLL9aNU1Fhx8YeNexVkHJc",
+                  "refresh_token": "0f244816df8ce9ada182e1687b2cbddaab4643a14e95a8d3fa30d20001dce9f273627d19ecaa16c7bca8110b6f5153f2999cbe97304bffd6ce044c5ab78fc815"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "summary": "refresh_token",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "refresh_token": "270ac10dfd726c191eda48556fc93cadfdeb466f0e9a56893842a1b20e3a72abe0fdc616b9dcaa6e1da3a545a67397bd2e876a205abfc026f5dca5d4990f50df"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMTViMmZhNy01MTZjLTQ2ZTctOWJjNS02MjRlM2Y3YTZhMWEiLCJlbWFpbCI6Im1hemVuQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg0Mzg3NzE4LCJleHAiOjE3ODQzODg2MTh9.e4b53a4y3ppXvdqCJFb9sPks6SmgQsG01HOZIuDch7c",
+                  "refresh_token": "9eb527267e41278ac5286b48582c9fd591d1d88874f574b3296055dcfe0b730b2534b7093885044973726ad34d2e8e39240b889ad95aa4ef46c5a432c04f1680"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "summary": "Logout",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "refresh_token": "fc26accfbfeba69605feabe21effb126868463e27a76abce6717cb62c618b1a55be9389a75e8ed20bae02787d1265f923e31d3594b38be771c1594f10bc0151c"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "message": "Logged out successfully"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/users/me": {
+      "get": {
+        "summary": "profile",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "id": "015b2fa7-516c-46e7-9bc5-624e3f7a6a1a",
+                  "email": "mazen@gmail.com",
+                  "firstName": "Mazennios",
+                  "lastName": "Fteha",
+                  "phone": null,
+                  "isActive": true,
+                  "isEmailVerified": false,
+                  "role": "USER",
+                  "createdAt": "2026-07-18T14:36:32.203Z",
+                  "updatedAt": "2026-07-18T14:36:32.203Z"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/users": {
+      "get": {
+        "summary": "Get All Users",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": [
+                  {
+                    "id": "015b2fa7-516c-46e7-9bc5-624e3f7a6a1a",
+                    "email": "mazen@gmail.com",
+                    "firstName": "Mazennios",
+                    "lastName": "Fteha",
+                    "phone": null,
+                    "isActive": true,
+                    "isEmailVerified": false,
+                    "role": "USER",
+                    "createdAt": "2026-07-18T14:36:32.203Z",
+                    "updatedAt": "2026-07-18T14:36:32.203Z"
+                  },
+                  {
+                    "id": "1a03df8f-39ce-4232-b3f4-b351f0d8a96a",
+                    "email": "probe.user@example.com",
+                    "firstName": "Probe",
+                    "lastName": "User",
+                    "phone": null,
+                    "isActive": true,
+                    "isEmailVerified": false,
+                    "role": "USER",
+                    "createdAt": "2026-07-17T23:05:45.344Z",
+                    "updatedAt": "2026-07-17T23:05:45.344Z"
+                  },
+                  {
+                    "id": "57cdfa52-d0d8-4f9f-a872-af1e4ad52022",
+                    "email": "admin@example.com",
+                    "firstName": "Root",
+                    "lastName": "Admin",
+                    "phone": null,
+                    "isActive": true,
+                    "isEmailVerified": true,
+                    "role": "ADMIN",
+                    "createdAt": "2026-07-17T23:02:26.846Z",
+                    "updatedAt": "2026-07-17T23:02:26.846Z"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [],
+  "security": []
+}

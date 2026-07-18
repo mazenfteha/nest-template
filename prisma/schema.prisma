@@ -1,0 +1,63 @@
+// Prisma schema — https://pris.ly/d/prisma-schema
+// Base tables for the starter template: User + Admin profile + RefreshToken.
+// Add your own models below and run `npm run prisma:migrate`.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  passwordHash    String?
+  firstName       String
+  lastName        String
+  phone           String?
+  isActive        Boolean   @default(true)
+  isEmailVerified Boolean   @default(false)
+  deletedAt       DateTime?
+  role            UserRole  @default(USER)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  admin         Admin?
+  refreshTokens RefreshToken[]
+
+  @@index([email])
+}
+
+model Admin {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String // SHA-256 hash of the raw token
+  family    String // UUID — groups rotated tokens for reuse detection
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+}
