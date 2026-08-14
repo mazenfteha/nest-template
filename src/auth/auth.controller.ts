@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Get,
   UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
@@ -15,6 +16,7 @@ import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
@@ -35,6 +37,15 @@ export class AuthController {
     return this.authService.login(user);
   }
 
+  @SkipThrottle()
+  @Public()
+  @UseGuards(JwtAuthGuard)
+  @Get('validate-token')
+  validateToken(@CurrentUser() user: User) {
+    return user;
+  }
+
+  @SkipThrottle()
   @Public()
   @Post('refresh')
   refresh(@Body() dto: RefreshDto) {

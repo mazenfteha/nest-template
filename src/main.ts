@@ -8,12 +8,16 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import type { AppConfig } from './config/app.config';
+import helmet from 'helmet';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   // Structured logging (pino) as the app logger.
   app.useLogger(app.get(Logger));
+
+  // Secure HTTP headers.
+  app.use(helmet());
 
   const config = app.get(ConfigService);
   const { port, apiPrefix, corsOrigins } = config.getOrThrow<AppConfig>('app');
