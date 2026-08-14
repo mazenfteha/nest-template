@@ -1,0 +1,25 @@
+node_modules
+dist
+coverage
+.git
+.gitignore
+
+# Env files — never bake secrets into the image (.env.example is safe to keep)
+.env
+.env.*
+!.env.example
+
+# Tooling / editor / CI cruft
+.vscode
+.idea
+.agents
+.claude
+test
+*.spec.ts
+npm-debug.log*
+Dockerfile
+.dockerignore
+
+# Docs
+*.md
+docs
