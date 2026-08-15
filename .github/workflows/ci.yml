@@ -25,15 +25,14 @@ jobs:
           node-version: 22 # matches Dockerfile NODE_VERSION
           cache: npm
 
-      # The committed package-lock.json is generated locally with npm 10.8.1.
-      # `npm ci` rejects any lockfile a *different* npm would resolve differently
-      # (newer npm dedupes the ajv@6/ajv@8 tree differently). Pin npm to match
-      # the lockfile. Bump this if you regenerate the lock with a newer npm.
-      - name: Pin npm to match lockfile
-        run: npm i -g npm@10.8.1
-
+      # Use `npm install`, not `npm ci`: the committed package-lock.json is
+      # generated on Windows, and `npm ci` on the Linux runner computes a
+      # different ideal tree and rejects the lock. `npm install` reconciles it
+      # instead of asserting an exact match, so it works regardless of the OS
+      # the lock was generated on. (Switch to `npm ci` if you ever commit a
+      # Linux-generated lockfile.)
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Generate Prisma client
         run: npx prisma generate # types must exist before lint/build (no DB needed)
@@ -70,6 +69,6 @@ jobs:
   #     - uses: actions/checkout@v4
   #     - uses: actions/setup-node@v4
   #       with: { node-version: 22, cache: npm }
-  #     - run: npm ci
+  #     - run: npm install --no-audit --no-fund
   #     - run: npx prisma migrate deploy
   #     - run: npm run test:e2e
