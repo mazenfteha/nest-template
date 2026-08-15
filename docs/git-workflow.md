@@ -59,7 +59,10 @@ Summarize what changed and how to test it.
 
 ### 6️⃣ Code review — the "Quality Gate"
 Reviewer(s) check correctness, tests, and that it follows the project conventions
-(see the `nestjs-best-practices` skill). CI (build, lint, tests) must be green.
+(see the `nestjs-best-practices` skill). CI must be green: the
+[`ci.yml`](../.github/workflows/ci.yml) workflow runs `lint:check` + `build` on every PR (and on
+pushes to `main` / `develop`). Commit messages are validated locally by **commitlint** (Conventional
+Commits) via a Husky `commit-msg` hook, and staged files are auto-linted/formatted on `pre-commit`.
 
 ### 7️⃣ Address feedback, then approve & merge — the "Finish Line"
 Push fixes to the same branch (the PR updates automatically). Once approved and CI passes, merge

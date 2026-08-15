@@ -181,6 +181,16 @@ npm run test:e2e   # e2e (boots AppModule)
 npm run test:cov   # coverage
 ```
 
+## Continuous integration & commit hygiene
+
+- **CI** — `.github/workflows/ci.yml` runs on every pull request and on pushes to `main` / `develop`:
+  `npm ci` → `prisma generate` → `npm run lint:check` → `npm run build`. Tests are intentionally left
+  out of the base pipeline (see the commented `test-e2e` job in the workflow to enable them).
+- **Git hooks** (installed automatically by `npm install` via Husky):
+  - **pre-commit** runs `lint-staged` — ESLint `--fix` + Prettier on staged `*.ts` files.
+  - **commit-msg** runs `commitlint` — commit messages must follow
+    [Conventional Commits](https://www.conventionalcommits.org/) (e.g. `feat(auth): add refresh rotation`).
+
 ## Documentation
 
 - [`docs/authentication.md`](docs/authentication.md) — full auth/authz workflow, protecting routes, adding roles, reusing the system in other projects.
