@@ -8,6 +8,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { appConfig } from './config/app.config';
 import { databaseConfig } from './config/database.config';
+import { googleConfig } from './config/google.config';
 import { jwtConfig } from './config/jwt.config';
 import { validationSchema } from './config/validation.schema';
 import { HealthModule } from './health/health.module';
@@ -20,7 +21,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV ?? 'development'}`, '.env'],
-      load: [appConfig, databaseConfig, jwtConfig],
+      load: [appConfig, databaseConfig, jwtConfig, googleConfig],
       validationSchema,
       validationOptions: { abortEarly: true, allowUnknown: true },
     }),
