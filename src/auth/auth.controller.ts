@@ -14,6 +14,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { SkipThrottle } from '@nestjs/throttler';
@@ -43,6 +44,24 @@ export class AuthController {
   @Get('validate-token')
   validateToken(@CurrentUser() user: User) {
     return user;
+  }
+
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @Get('google')
+  // The guard redirects to Google's consent screen; this handler never runs.
+  googleAuth() {
+    return;
+  }
+
+  @SkipThrottle()
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  googleCallback(@CurrentUser() user: User) {
+    // GoogleStrategy has resolved/created the user into req.user; mint our
+    // own token pair, identical in shape to the login/refresh responses.
+    return this.authService.login(user);
   }
 
   @SkipThrottle()
