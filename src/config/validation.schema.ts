@@ -12,6 +12,11 @@ export const validationSchema = Joi.object({
   API_PREFIX: Joi.string().default('api'),
   CORS_ORIGINS: Joi.string().default('*'),
 
+  // Optional. Unset → debug in development, log elsewhere. See docs/logging.md.
+  LOG_LEVEL: Joi.string()
+    .valid('verbose', 'debug', 'log', 'warn', 'error')
+    .optional(),
+
   DATABASE_URL: Joi.string()
     .uri({ scheme: ['postgres', 'postgresql'] })
     .required(),
