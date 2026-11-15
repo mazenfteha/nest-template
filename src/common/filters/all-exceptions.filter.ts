@@ -4,9 +4,10 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Logger } from 'nestjs-pino';
+import { errorMessage, errorStack } from '../logging/log-format';
 
 interface ErrorBody {
   statusCode: number;
@@ -14,15 +15,17 @@ interface ErrorBody {
   message: string | string[];
   timestamp: string;
   path: string;
+  requestId?: string;
 }
 
 /**
  * Catches every unhandled exception and returns a consistent JSON shape.
- * 5xx are logged as errors (with stack); 4xx as warnings.
+ * 5xx are logged as errors (message, stack, request id). 4xx only get a debug
+ * line, because the [HTTP] request line already shows the status.
  */
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly logger: Logger) {}
+  private readonly logger = new Logger(AllExceptionsFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
@@ -42,16 +45,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message,
       timestamp: new Date().toISOString(),
       path: request.url,
+      requestId: request.id,
     };
 
-    const context = `${request.method} ${request.url}`;
+    const context = `${request.method} ${request.originalUrl ?? request.url}`;
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(
-        { err: exception, statusCode: status },
-        `Unhandled exception: ${context}`,
+        `${context} failed (${status}, request ${request.id}): ${errorMessage(exception)}`,
+        errorStack(exception),
       );
     } else {
-      this.logger.warn({ statusCode: status }, `Request error: ${context}`);
+      this.logger.debug(`${context} → ${status} ${error}`);
     }
 
     response.status(status).json(body);

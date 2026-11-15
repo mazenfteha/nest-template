@@ -244,5 +244,5 @@ bcrypt hashing, and the secure-by-default posture. That's the reusable core.
 - ✅ `passwordHash` excluded from responses via `UserResponseDto` + global serializer.
 - ✅ Refresh tokens stored only as SHA-256 hashes; rotated on every use; family revoked on reuse.
 - ✅ Short-lived access tokens; secret from env (min 32 chars, enforced by Joi).
-- ✅ Auth headers / passwords redacted from logs (pino config).
+- ✅ Headers, bodies and tokens are never logged (see `docs/logging.md`).
 - ✅ Secure-by-default routing — new routes are protected unless opted out with `@Public()`.

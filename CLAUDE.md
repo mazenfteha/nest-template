@@ -61,9 +61,14 @@ service, DTOs; only exports what others need.
   `transform`) validates all input DTOs; global `ClassSerializerInterceptor` applies response
   serialization. Return class instances (e.g. `new UserResponseDto(user)`) for `@Exclude()` to take effect.
 - **Errors.** Throw `HttpException` subclasses (e.g. `ConflictException`) from services;
-  `AllExceptionsFilter` normalizes them to a consistent JSON body and logs via pino.
-- **Logging.** `nestjs-pino` is the app logger (`app.useLogger(app.get(Logger))`). Use injected
-  pino `Logger`, not `console.*`. Auth headers and passwords are redacted.
+  `AllExceptionsFilter` normalizes them to a consistent JSON body (with `requestId`) and logs 5xx
+  with stack; 4xx only at debug.
+- **Logging.** Nest's built-in logger, set up once in `main.ts` (`{ logger: new AppLogger() }`,
+  levels from `LOG_LEVEL`). Use `private readonly logger = new Logger(MyService.name)`, never
+  `console.*`. One readable string per line, no objects; errors via
+  `` logger.error(`msg: ${errorMessage(err)}`, errorStack(err)) `` (`src/common/logging/log-format.ts`).
+  `requestIdMiddleware` → `requestLoggerMiddleware` give one `[HTTP]` line per request. Never log
+  tokens, secrets, headers or bodies. Rules: `docs/logging.md`.
 
 ## Conventions / gotchas
 

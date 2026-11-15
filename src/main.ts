@@ -1,20 +1,25 @@
 import {
   ClassSerializerInterceptor,
+  Logger,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import type { AppConfig } from './config/app.config';
 import helmet from 'helmet';
+import { AppLogger } from './common/logging/app-logger';
+import { requestIdMiddleware } from './common/context/request-id.middleware';
+import { requestLoggerMiddleware } from './common/logging/request-logger.middleware';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  // The only logger setup point: every `new Logger('X')` writes through AppLogger.
+  const app = await NestFactory.create(AppModule, { logger: new AppLogger() });
 
-  // Structured logging (pino) as the app logger.
-  app.useLogger(app.get(Logger));
+  // Order matters: request id first (so later logs can use it), then the per-request log line.
+  app.use(requestIdMiddleware);
+  app.use(requestLoggerMiddleware);
 
   // Secure HTTP headers.
   app.use(helmet());
@@ -51,7 +56,9 @@ async function bootstrap(): Promise<void> {
   app.enableShutdownHooks();
 
   await app.listen(port, '0.0.0.0');
-  app.get(Logger).log(`Application listening on port ${port} (/${apiPrefix})`);
+  new Logger('Bootstrap').log(
+    `Application listening on port ${port} (/${apiPrefix})`,
+  );
 }
 
 bootstrap();

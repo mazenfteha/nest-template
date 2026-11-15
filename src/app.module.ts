@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
@@ -24,17 +23,6 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       load: [appConfig, databaseConfig, jwtConfig, googleConfig],
       validationSchema,
       validationOptions: { abortEarly: true, allowUnknown: true },
-    }),
-    LoggerModule.forRoot({
-      pinoHttp: {
-        level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-        transport:
-          process.env.NODE_ENV === 'production'
-            ? undefined
-            : { target: 'pino-pretty', options: { singleLine: true } },
-        redact: ['req.headers.authorization', 'req.body.password'],
-        autoLogging: true,
-      },
     }),
     ThrottlerModule.forRoot({
       throttlers: [

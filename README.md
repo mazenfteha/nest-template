@@ -9,7 +9,7 @@ A reusable, production-ready NestJS 10 starter. Clone it and start adding busine
 - **Authorization** — global `JwtAuthGuard` (secure-by-default) + `RolesGuard`, with `@Public()`, `@Roles()`, `@CurrentUser()` decorators.
 - **Global config** — `@nestjs/config` with a **Joi** schema that fails fast on bad/missing env vars.
 - **Environment separation** — `cross-env` drives `development` / `staging` / `production`; each loads `.env.<NODE_ENV>` then `.env`.
-- **Bootstrap** — pino structured logging, global exception filter, `/api` prefix, URI versioning (`/api/v1`), global `ValidationPipe` + `ClassSerializerInterceptor`, CORS, graceful shutdown.
+- **Bootstrap** — Nest built-in logging with request ids (see `docs/logging.md`), global exception filter, `/api` prefix, URI versioning (`/api/v1`), global `ValidationPipe` + `ClassSerializerInterceptor`, CORS, graceful shutdown.
 - **Health checks** — `@nestjs/terminus` liveness + readiness probes.
 
 ## Prerequisites
