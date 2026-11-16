@@ -12,6 +12,7 @@ import { UserRole } from '../common/enums/user-role.enum';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
+import { Traced } from '../common/observability/traced.decorator';
 
 export interface TokenPair {
   access_token: string;
@@ -27,6 +28,7 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
+  @Traced()
   async register(dto: RegisterDto): Promise<{ message: string }> {
     const exists = await this.usersService.findByEmail(dto.email);
     if (exists) throw new ConflictException('Email already registered');
@@ -48,6 +50,7 @@ export class AuthService {
     return { message: 'Registration successful' };
   }
 
+  @Traced()
   async login(user: User): Promise<TokenPair> {
     const accessToken = this.generateAccessToken(user);
     const { refreshToken, tokenHash, family } = this.generateRefreshToken();
@@ -56,7 +59,7 @@ export class AuthService {
 
     return { access_token: accessToken, refresh_token: refreshToken };
   }
-
+  @Traced()
   async refresh(rawToken: string): Promise<TokenPair> {
     const tokenHash = this.hashToken(rawToken);
     const stored = await this.prisma.refreshToken.findFirst({

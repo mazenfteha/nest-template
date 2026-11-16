@@ -7,6 +7,8 @@ export interface AppConfig {
   port: number;
   apiPrefix: string;
   corsOrigins: string[];
+  /** Liveness fails when V8 heap use exceeds this (MB). */
+  healthHeapLimitMb: number;
 }
 
 export const appConfig = registerAs('app', (): AppConfig => ({
@@ -17,4 +19,5 @@ export const appConfig = registerAs('app', (): AppConfig => ({
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean),
+  healthHeapLimitMb: parseInt(process.env.HEALTH_HEAP_LIMIT_MB ?? '300', 10),
 }));

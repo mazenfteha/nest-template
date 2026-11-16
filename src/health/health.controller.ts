@@ -1,10 +1,12 @@
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   HealthCheck,
   HealthCheckService,
   MemoryHealthIndicator,
 } from '@nestjs/terminus';
 import { Public } from '../auth/decorators/public.decorator';
+import type { AppConfig } from '../config/app.config';
 import { PrismaHealthIndicator } from './prisma.health';
 
 @Public()
@@ -14,14 +16,17 @@ export class HealthController {
     private readonly health: HealthCheckService,
     private readonly memory: MemoryHealthIndicator,
     private readonly prisma: PrismaHealthIndicator,
+    private readonly config: ConfigService,
   ) {}
 
   /** Liveness — is the process alive? (cheap, no external deps). */
   @Get('live')
   @HealthCheck()
   liveness() {
+    const { healthHeapLimitMb } = this.config.getOrThrow<AppConfig>('app');
     return this.health.check([
-      () => this.memory.checkHeap('memory_heap', 300 * 1024 * 1024),
+      () =>
+        this.memory.checkHeap('memory_heap', healthHeapLimitMb * 1024 * 1024),
     ]);
   }
 
