@@ -12,10 +12,14 @@ import helmet from 'helmet';
 import { AppLogger } from './common/logging/app-logger';
 import { requestIdMiddleware } from './common/context/request-id.middleware';
 import { requestLoggerMiddleware } from './common/logging/request-logger.middleware';
+import { ObserveInstrument } from './common/observability/observe';
 
 async function bootstrap(): Promise<void> {
   // The only logger setup point: every `new Logger('X')` writes through AppLogger.
-  const app = await NestFactory.create(AppModule, { logger: new AppLogger() });
+  const app = await NestFactory.create(AppModule, {
+    logger: new AppLogger(),
+    instrument: ObserveInstrument,
+  });
 
   // Order matters: request id first (so later logs can use it), then the per-request log line.
   app.use(requestIdMiddleware);

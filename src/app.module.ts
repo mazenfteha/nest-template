@@ -14,6 +14,7 @@ import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ObserveModule } from './common/observability/observe';
 
 @Module({
   imports: [
@@ -31,6 +32,17 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
           limit: 100,
         },
       ],
+    }),
+
+    ObserveModule.forRoot({
+      serviceId: 'nest-template',
+      // Only staging/prod send data, so dev traffic doesn't use up the Free plan's 300k events/month.
+      // but i will add it for testing purposes
+      enabled: ['development', 'staging', 'production'].includes(
+        process.env.NODE_ENV,
+      ),
+      shutdownFlushTimeout: process.env.NODE_ENV === 'test' ? 0 : undefined,
+      // appKey/appSecret are left out on purpose: the SDK reads OBSERVE_APP_KEY / OBSERVE_APP_SECRET from env.
     }),
     PrismaModule,
     HealthModule,

@@ -3,6 +3,9 @@
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
+  "moduleNameMapper": {
+    "^@nestjs/observe$": "<rootDir>/mocks/nestjs-observe.ts"
+  },
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   }
